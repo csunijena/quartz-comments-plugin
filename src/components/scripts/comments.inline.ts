@@ -1,4 +1,4 @@
-const changeTheme = (e: Event) => {
+const changeGiscusTheme = (e: Event) => {
   const theme = (e as CustomEvent).detail.theme;
   const iframe = document.querySelector("iframe.giscus-frame") as HTMLIFrameElement;
   if (!iframe) {
@@ -19,6 +19,21 @@ const changeTheme = (e: Event) => {
     },
     "https://giscus.app",
   );
+};
+
+const changeBeBlobTheme = (e: Event) => {
+  const theme = (e as CustomEvent).detail.theme;
+  const beblobContainer = document.querySelector(".beblob") as BeBlobElement;
+  if (!beblobContainer) {
+    return;
+  }
+
+  const newTheme = theme === "dark" ? "dark" : "light";
+  beblobContainer.setAttribute("data-theme", newTheme);
+  const beblobScript = document.getElementById("beblob-script") as HTMLScriptElement | null;
+  if (beblobScript) {
+    beblobScript.setAttribute("data-theme", newTheme);
+  }
 };
 
 const getThemeName = (theme: string) => {
@@ -59,6 +74,18 @@ type GiscusElement = Omit<HTMLElement, "dataset"> & {
   };
 };
 
+type BeBlobElement = Omit<HTMLElement, "dataset"> & {
+  dataset: DOMStringMap & {
+    clientId: string;
+    redirectUri: string;
+    projectName: string;
+    issueMappingStrategy: string;
+    theme: string;
+    lang: string;
+    gitlabUrl: string;
+  };
+};
+
 const cleanup: (() => void)[] = [];
 
 const addCleanup = (fn: () => void) => {
@@ -71,35 +98,57 @@ if (typeof document !== "undefined") {
     cleanup.length = 0;
 
     const giscusContainer = document.querySelector(".giscus") as GiscusElement;
-    if (!giscusContainer) {
-      return;
+    const beblobContainer = document.querySelector(".beblob") as BeBlobElement;
+
+    if (giscusContainer) {
+      const giscusScript = document.createElement("script");
+      giscusScript.src = "https://giscus.app/client.js";
+      giscusScript.async = true;
+      giscusScript.crossOrigin = "anonymous";
+      giscusScript.setAttribute("data-loading", "lazy");
+      giscusScript.setAttribute("data-emit-metadata", "0");
+      giscusScript.setAttribute("data-repo", giscusContainer.dataset.repo);
+      giscusScript.setAttribute("data-repo-id", giscusContainer.dataset.repoId);
+      giscusScript.setAttribute("data-category", giscusContainer.dataset.category);
+      giscusScript.setAttribute("data-category-id", giscusContainer.dataset.categoryId);
+      giscusScript.setAttribute("data-mapping", giscusContainer.dataset.mapping);
+      giscusScript.setAttribute("data-strict", giscusContainer.dataset.strict);
+      giscusScript.setAttribute("data-reactions-enabled", giscusContainer.dataset.reactionsEnabled);
+      giscusScript.setAttribute("data-input-position", giscusContainer.dataset.inputPosition);
+      giscusScript.setAttribute("data-lang", giscusContainer.dataset.lang);
+      const theme = document.documentElement.getAttribute("saved-theme");
+      if (theme) {
+        giscusScript.setAttribute("data-theme", getThemeUrl(getThemeName(theme)));
+      }
+
+      giscusContainer.appendChild(giscusScript);
+
+      const themeChangeHandler = changeGiscusTheme;
+      document.addEventListener("themechange", themeChangeHandler);
+      addCleanup(() => document.removeEventListener("themechange", themeChangeHandler));
+    } else if (beblobContainer) {
+      const beblobScript = document.createElement("script");
+      beblobScript.id = "beblob-script";
+      beblobScript.src = "https://unpkg.com/beblob@2.1.0/dist/beblob.js";
+      beblobScript.async = true;
+      beblobScript.defer = true;
+      beblobScript.setAttribute("data-client-id", beblobContainer.dataset.clientId);
+      beblobScript.setAttribute("data-redirect-uri", beblobContainer.dataset.redirectUri);
+      beblobScript.setAttribute("data-project-name", beblobContainer.dataset.projectName);
+      beblobScript.setAttribute(
+        "data-issue-mapping-strategy",
+        beblobContainer.dataset.issueMappingStrategy,
+      );
+      beblobScript.setAttribute("data-theme", beblobContainer.dataset.theme);
+      beblobScript.setAttribute("data-lang", beblobContainer.dataset.lang);
+      beblobScript.setAttribute("data-gitlab-url", beblobContainer.dataset.gitlabUrl);
+
+      beblobContainer.appendChild(beblobScript);
+
+      const themeChangeHandler = changeBeBlobTheme;
+      document.addEventListener("themechange", themeChangeHandler);
+      addCleanup(() => document.removeEventListener("themechange", themeChangeHandler));
     }
-
-    const giscusScript = document.createElement("script");
-    giscusScript.src = "https://giscus.app/client.js";
-    giscusScript.async = true;
-    giscusScript.crossOrigin = "anonymous";
-    giscusScript.setAttribute("data-loading", "lazy");
-    giscusScript.setAttribute("data-emit-metadata", "0");
-    giscusScript.setAttribute("data-repo", giscusContainer.dataset.repo);
-    giscusScript.setAttribute("data-repo-id", giscusContainer.dataset.repoId);
-    giscusScript.setAttribute("data-category", giscusContainer.dataset.category);
-    giscusScript.setAttribute("data-category-id", giscusContainer.dataset.categoryId);
-    giscusScript.setAttribute("data-mapping", giscusContainer.dataset.mapping);
-    giscusScript.setAttribute("data-strict", giscusContainer.dataset.strict);
-    giscusScript.setAttribute("data-reactions-enabled", giscusContainer.dataset.reactionsEnabled);
-    giscusScript.setAttribute("data-input-position", giscusContainer.dataset.inputPosition);
-    giscusScript.setAttribute("data-lang", giscusContainer.dataset.lang);
-    const theme = document.documentElement.getAttribute("saved-theme");
-    if (theme) {
-      giscusScript.setAttribute("data-theme", getThemeUrl(getThemeName(theme)));
-    }
-
-    giscusContainer.appendChild(giscusScript);
-
-    const themeChangeHandler = changeTheme;
-    document.addEventListener("themechange", themeChangeHandler);
-    addCleanup(() => document.removeEventListener("themechange", themeChangeHandler));
   };
 
   document.addEventListener("nav", setupComments);

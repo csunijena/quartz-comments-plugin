@@ -4,7 +4,7 @@ function classNames(...classes) {
 }
 
 // src/components/scripts/comments.inline.ts
-var comments_inline_default = 'var d=s=>{let e=s.detail.theme,t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow&&t.contentWindow.postMessage({giscus:{setConfig:{theme:c(r(e))}}},"https://giscus.app")},r=s=>{if(s!=="dark"&&s!=="light")return s;let e=document.querySelector(".giscus");if(!e)return s;let t=e.dataset.darkTheme??"dark",a=e.dataset.lightTheme??"light";return s==="dark"?t:a},c=s=>{let e=document.querySelector(".giscus");return e?`${e.dataset.themeUrl??"https://giscus.app/themes"}/${s}.css`:`https://giscus.app/themes/${s}.css`},n=[],u=s=>{n.push(s)};if(typeof document<"u"){let s=()=>{n.forEach(o=>o()),n.length=0;let e=document.querySelector(".giscus");if(!e)return;let t=document.createElement("script");t.src="https://giscus.app/client.js",t.async=!0,t.crossOrigin="anonymous",t.setAttribute("data-loading","lazy"),t.setAttribute("data-emit-metadata","0"),t.setAttribute("data-repo",e.dataset.repo),t.setAttribute("data-repo-id",e.dataset.repoId),t.setAttribute("data-category",e.dataset.category),t.setAttribute("data-category-id",e.dataset.categoryId),t.setAttribute("data-mapping",e.dataset.mapping),t.setAttribute("data-strict",e.dataset.strict),t.setAttribute("data-reactions-enabled",e.dataset.reactionsEnabled),t.setAttribute("data-input-position",e.dataset.inputPosition),t.setAttribute("data-lang",e.dataset.lang);let a=document.documentElement.getAttribute("saved-theme");a&&t.setAttribute("data-theme",c(r(a))),e.appendChild(t);let i=d;document.addEventListener("themechange",i),u(()=>document.removeEventListener("themechange",i))};document.addEventListener("nav",s),document.addEventListener("render",s)}\n';
+var comments_inline_default = 'var u=a=>{let e=a.detail.theme,s=document.querySelector("iframe.giscus-frame");s&&s.contentWindow&&s.contentWindow.postMessage({giscus:{setConfig:{theme:o(d(e))}}},"https://giscus.app")},m=a=>{let e=a.detail.theme,s=document.querySelector(".beblob");if(!s)return;let t=e==="dark"?"dark":"light";s.setAttribute("data-theme",t);let n=document.getElementById("beblob-script");n&&n.setAttribute("data-theme",t)},d=a=>{if(a!=="dark"&&a!=="light")return a;let e=document.querySelector(".giscus");if(!e)return a;let s=e.dataset.darkTheme??"dark",t=e.dataset.lightTheme??"light";return a==="dark"?s:t},o=a=>{let e=document.querySelector(".giscus");return e?`${e.dataset.themeUrl??"https://giscus.app/themes"}/${a}.css`:`https://giscus.app/themes/${a}.css`},i=[],c=a=>{i.push(a)};if(typeof document<"u"){let a=()=>{i.forEach(t=>t()),i.length=0;let e=document.querySelector(".giscus"),s=document.querySelector(".beblob");if(e){let t=document.createElement("script");t.src="https://giscus.app/client.js",t.async=!0,t.crossOrigin="anonymous",t.setAttribute("data-loading","lazy"),t.setAttribute("data-emit-metadata","0"),t.setAttribute("data-repo",e.dataset.repo),t.setAttribute("data-repo-id",e.dataset.repoId),t.setAttribute("data-category",e.dataset.category),t.setAttribute("data-category-id",e.dataset.categoryId),t.setAttribute("data-mapping",e.dataset.mapping),t.setAttribute("data-strict",e.dataset.strict),t.setAttribute("data-reactions-enabled",e.dataset.reactionsEnabled),t.setAttribute("data-input-position",e.dataset.inputPosition),t.setAttribute("data-lang",e.dataset.lang);let n=document.documentElement.getAttribute("saved-theme");n&&t.setAttribute("data-theme",o(d(n))),e.appendChild(t);let r=u;document.addEventListener("themechange",r),c(()=>document.removeEventListener("themechange",r))}else if(s){let t=document.createElement("script");t.id="beblob-script",t.src="https://unpkg.com/beblob@2.1.0/dist/beblob.js",t.async=!0,t.defer=!0,t.setAttribute("data-client-id",s.dataset.clientId),t.setAttribute("data-redirect-uri",s.dataset.redirectUri),t.setAttribute("data-project-name",s.dataset.projectName),t.setAttribute("data-issue-mapping-strategy",s.dataset.issueMappingStrategy),t.setAttribute("data-theme",s.dataset.theme),t.setAttribute("data-lang",s.dataset.lang),t.setAttribute("data-gitlab-url",s.dataset.gitlabUrl),s.appendChild(t);let n=m;document.addEventListener("themechange",n),c(()=>document.removeEventListener("themechange",n))}};document.addEventListener("nav",a),document.addEventListener("render",a)}\n';
 var l;
 function S(n2) {
   return n2.children;
@@ -39,24 +39,59 @@ var Comments_default = ((opts) => {
     if (commentsOverride === false || commentsOverride === "false") {
       return /* @__PURE__ */ u2(S, {});
     }
-    return /* @__PURE__ */ u2(
-      "div",
-      {
-        class: classNames(displayClass, "giscus"),
-        "data-repo": opts.options.repo,
-        "data-repo-id": opts.options.repoId,
-        "data-category": opts.options.category,
-        "data-category-id": opts.options.categoryId,
-        "data-mapping": opts.options.mapping ?? "url",
-        "data-strict": boolToStringBool(opts.options.strict ?? true),
-        "data-reactions-enabled": boolToStringBool(opts.options.reactionsEnabled ?? true),
-        "data-input-position": opts.options.inputPosition ?? "bottom",
-        "data-light-theme": opts.options.lightTheme ?? "light",
-        "data-dark-theme": opts.options.darkTheme ?? "dark",
-        "data-theme-url": opts.options.themeUrl ?? `https://${cfg.baseUrl ?? "example.com"}/static/giscus`,
-        "data-lang": opts.options.lang ?? "en"
-      }
-    );
+    if (opts.provider === "giscus") {
+      return /* @__PURE__ */ u2(
+        "div",
+        {
+          class: classNames(displayClass, "giscus"),
+          "data-repo": opts.options.repo,
+          "data-repo-id": opts.options.repoId,
+          "data-category": opts.options.category,
+          "data-category-id": opts.options.categoryId,
+          "data-mapping": opts.options.mapping ?? "url",
+          "data-strict": boolToStringBool(opts.options.strict ?? true),
+          "data-reactions-enabled": boolToStringBool(opts.options.reactionsEnabled ?? true),
+          "data-input-position": opts.options.inputPosition ?? "bottom",
+          "data-light-theme": opts.options.lightTheme ?? "light",
+          "data-dark-theme": opts.options.darkTheme ?? "dark",
+          "data-theme-url": opts.options.themeUrl ?? `https://${cfg.baseUrl ?? "example.com"}/static/giscus`,
+          "data-lang": opts.options.lang ?? "en"
+        }
+      );
+    } else if (opts.provider === "beblob") {
+      return /* @__PURE__ */ u2(
+        "div",
+        {
+          class: classNames(displayClass, "beblob"),
+          id: "beblob_thread",
+          "data-client-id": opts.options.clientId,
+          "data-redirect-uri": opts.options.redirectUri,
+          "data-project-name": opts.options.projectName,
+          "data-issue-mapping-strategy": opts.options.issueMappingStrategy ?? "pageTitle",
+          "data-theme": opts.options.theme ?? "light",
+          "data-lang": opts.options.lang ?? "en",
+          "data-gitlab-url": opts.options.gitlabUrl ?? "https://gitlab.com",
+          children: [
+            /* @__PURE__ */ u2("noscript", { children: "Please enable JavaScript to view comments." }),
+            /* @__PURE__ */ u2(
+              "script",
+              {
+                id: "beblob-script",
+                src: "https://unpkg.com/beblob@2.1.0/dist/beblob.js",
+                "data-client-id": opts.options.clientId,
+                "data-redirect-uri": opts.options.redirectUri,
+                "data-project-name": opts.options.projectName,
+                "data-issue-mapping-strategy": opts.options.issueMappingStrategy ?? "pageTitle",
+                "data-theme": opts.options.theme ?? "light",
+                "data-lang": opts.options.lang ?? "en",
+                "data-gitlab-url": opts.options.gitlabUrl ?? "https://gitlab.com",
+                defer: true
+              }
+            )
+          ]
+        }
+      );
+    }
   };
   Comments.afterDOMLoaded = comments_inline_default;
   return Comments;

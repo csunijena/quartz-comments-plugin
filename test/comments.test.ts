@@ -5,13 +5,24 @@ import type { QuartzComponent, QuartzComponentProps } from "@quartz-community/ty
 
 type CommentsOptions = Parameters<typeof Comments>[0];
 
-const baseOpts: CommentsOptions = {
+const baseGiscusOpts: CommentsOptions = {
   provider: "giscus",
   options: {
     repo: "test/repo",
     repoId: "test-id",
     category: "Announcements",
     categoryId: "test-cat-id",
+  },
+};
+
+const baseBeBlobOpts: CommentsOptions = {
+  provider: "beblob",
+  options: {
+    clientId: "test-client-id",
+    redirectUri: "https://example.com/",
+    projectName: "test/repo",
+    issueMappingStrategy: "pageTitle",
+    theme: "light",
   },
 };
 
@@ -62,128 +73,236 @@ describe("Comments Plugin", () => {
   });
 
   it("should create a component with options", () => {
-    const component = Comments(baseOpts);
+    const component = Comments(baseGiscusOpts);
+    expect(component).toBeDefined();
+    expect(typeof component).toBe("function");
+  });
+
+  it("should create a BeBlob component with options", () => {
+    const component = Comments(baseBeBlobOpts);
     expect(component).toBeDefined();
     expect(typeof component).toBe("function");
   });
 });
 
 describe("Comments: frontmatter.comments override", () => {
-  it("renders the giscus div when frontmatter.comments is undefined", () => {
-    const result = renderComments(baseOpts, buildProps({ frontmatter: {} }));
-    const props = getDivProps(result);
-    expect(props).not.toBeNull();
-    expect(props?.["data-repo"]).toBe("test/repo");
+  describe("Giscus provider", () => {
+    it("renders the giscus div when frontmatter.comments is undefined", () => {
+      const result = renderComments(baseGiscusOpts, buildProps({ frontmatter: {} }));
+      const props = getDivProps(result);
+      expect(props).not.toBeNull();
+      expect(props?.["data-repo"]).toBe("test/repo");
+    });
+
+    it("renders the giscus div when frontmatter.comments is true", () => {
+      const result = renderComments(
+        baseGiscusOpts,
+        buildProps({ frontmatter: { comments: true } }),
+      );
+      expect(getDivProps(result)).not.toBeNull();
+    });
+
+    it("renders the giscus div when frontmatter.comments is the string 'true'", () => {
+      const result = renderComments(
+        baseGiscusOpts,
+        buildProps({ frontmatter: { comments: "true" } }),
+      );
+      expect(getDivProps(result)).not.toBeNull();
+    });
+
+    it("suppresses comments when frontmatter.comments is false", () => {
+      const result = renderComments(
+        baseGiscusOpts,
+        buildProps({ frontmatter: { comments: false } }),
+      );
+      expect(isFragmentOrEmpty(result)).toBe(true);
+      expect(getDivProps(result)).toBeNull();
+    });
+
+    it("suppresses comments when frontmatter.comments is the string 'false'", () => {
+      const result = renderComments(
+        baseGiscusOpts,
+        buildProps({ frontmatter: { comments: "false" } }),
+      );
+      expect(isFragmentOrEmpty(result)).toBe(true);
+      expect(getDivProps(result)).toBeNull();
+    });
+
+    it("renders the giscus div when frontmatter.comments is the number 0", () => {
+      const result = renderComments(baseGiscusOpts, buildProps({ frontmatter: { comments: 0 } }));
+      expect(getDivProps(result)).not.toBeNull();
+    });
+
+    it("renders the giscus div when frontmatter.comments is the empty string", () => {
+      const result = renderComments(baseGiscusOpts, buildProps({ frontmatter: { comments: "" } }));
+      expect(getDivProps(result)).not.toBeNull();
+    });
+
+    it("renders the giscus div when frontmatter.comments is null", () => {
+      const result = renderComments(
+        baseGiscusOpts,
+        buildProps({ frontmatter: { comments: null } }),
+      );
+      expect(getDivProps(result)).not.toBeNull();
+    });
   });
 
-  it("renders the giscus div when frontmatter.comments is true", () => {
-    const result = renderComments(baseOpts, buildProps({ frontmatter: { comments: true } }));
-    expect(getDivProps(result)).not.toBeNull();
-  });
+  describe("BeBlob provider", () => {
+    it("renders the beblob div when frontmatter.comments is undefined", () => {
+      const result = renderComments(baseBeBlobOpts, buildProps({ frontmatter: {} }));
+      const props = getDivProps(result);
+      expect(props).not.toBeNull();
+      expect(props?.["data-client-id"]).toBe("test-client-id");
+    });
 
-  it("renders the giscus div when frontmatter.comments is the string 'true'", () => {
-    const result = renderComments(baseOpts, buildProps({ frontmatter: { comments: "true" } }));
-    expect(getDivProps(result)).not.toBeNull();
-  });
+    it("renders the beblob div when frontmatter.comments is true", () => {
+      const result = renderComments(
+        baseBeBlobOpts,
+        buildProps({ frontmatter: { comments: true } }),
+      );
+      expect(getDivProps(result)).not.toBeNull();
+    });
 
-  it("suppresses comments when frontmatter.comments is false", () => {
-    const result = renderComments(baseOpts, buildProps({ frontmatter: { comments: false } }));
-    expect(isFragmentOrEmpty(result)).toBe(true);
-    expect(getDivProps(result)).toBeNull();
-  });
+    it("suppresses comments when frontmatter.comments is false", () => {
+      const result = renderComments(
+        baseBeBlobOpts,
+        buildProps({ frontmatter: { comments: false } }),
+      );
+      expect(isFragmentOrEmpty(result)).toBe(true);
+      expect(getDivProps(result)).toBeNull();
+    });
 
-  it("suppresses comments when frontmatter.comments is the string 'false'", () => {
-    const result = renderComments(baseOpts, buildProps({ frontmatter: { comments: "false" } }));
-    expect(isFragmentOrEmpty(result)).toBe(true);
-    expect(getDivProps(result)).toBeNull();
-  });
-
-  it("renders the giscus div when frontmatter.comments is the number 0", () => {
-    // 0 is falsy but not a documented disable value; it must not suppress comments.
-    const result = renderComments(baseOpts, buildProps({ frontmatter: { comments: 0 } }));
-    expect(getDivProps(result)).not.toBeNull();
-  });
-
-  it("renders the giscus div when frontmatter.comments is the empty string", () => {
-    // Empty string is falsy but not a documented disable value; it must not suppress comments.
-    const result = renderComments(baseOpts, buildProps({ frontmatter: { comments: "" } }));
-    expect(getDivProps(result)).not.toBeNull();
-  });
-
-  it("renders the giscus div when frontmatter.comments is null", () => {
-    // null is falsy but not a documented disable value; it must not suppress comments.
-    const result = renderComments(baseOpts, buildProps({ frontmatter: { comments: null } }));
-    expect(getDivProps(result)).not.toBeNull();
+    it("suppresses comments when frontmatter.comments is the string 'false'", () => {
+      const result = renderComments(
+        baseBeBlobOpts,
+        buildProps({ frontmatter: { comments: "false" } }),
+      );
+      expect(isFragmentOrEmpty(result)).toBe(true);
+      expect(getDivProps(result)).toBeNull();
+    });
   });
 });
 
 describe("Comments: data attribute wiring", () => {
-  it("propagates required giscus options", () => {
-    const result = renderComments(baseOpts, buildProps());
-    const props = getDivProps(result);
-    expect(props).not.toBeNull();
-    expect(props?.["data-repo"]).toBe("test/repo");
-    expect(props?.["data-repo-id"]).toBe("test-id");
-    expect(props?.["data-category"]).toBe("Announcements");
-    expect(props?.["data-category-id"]).toBe("test-cat-id");
+  describe("Giscus provider", () => {
+    it("propagates required giscus options", () => {
+      const result = renderComments(baseGiscusOpts, buildProps());
+      const props = getDivProps(result);
+      expect(props).not.toBeNull();
+      expect(props?.["data-repo"]).toBe("test/repo");
+      expect(props?.["data-repo-id"]).toBe("test-id");
+      expect(props?.["data-category"]).toBe("Announcements");
+      expect(props?.["data-category-id"]).toBe("test-cat-id");
+    });
+
+    it("applies default values when optional options are omitted", () => {
+      const result = renderComments(baseGiscusOpts, buildProps());
+      const props = getDivProps(result);
+      expect(props?.["data-mapping"]).toBe("url");
+      expect(props?.["data-strict"]).toBe("1");
+      expect(props?.["data-reactions-enabled"]).toBe("1");
+      expect(props?.["data-input-position"]).toBe("bottom");
+      expect(props?.["data-light-theme"]).toBe("light");
+      expect(props?.["data-dark-theme"]).toBe("dark");
+      expect(props?.["data-lang"]).toBe("en");
+    });
+
+    it("respects user-provided optional values", () => {
+      const opts: CommentsOptions = {
+        provider: "giscus",
+        options: {
+          ...baseGiscusOpts.options,
+          mapping: "pathname",
+          strict: false,
+          reactionsEnabled: false,
+          inputPosition: "top",
+          lightTheme: "catppuccin_latte",
+          darkTheme: "catppuccin_mocha",
+          lang: "nl",
+        },
+      };
+      const result = renderComments(opts, buildProps());
+      const props = getDivProps(result);
+      expect(props?.["data-mapping"]).toBe("pathname");
+      expect(props?.["data-strict"]).toBe("0");
+      expect(props?.["data-reactions-enabled"]).toBe("0");
+      expect(props?.["data-input-position"]).toBe("top");
+      expect(props?.["data-light-theme"]).toBe("catppuccin_latte");
+      expect(props?.["data-dark-theme"]).toBe("catppuccin_mocha");
+      expect(props?.["data-lang"]).toBe("nl");
+    });
+
+    it("uses cfg.baseUrl to build the default themeUrl", () => {
+      const result = renderComments(
+        baseGiscusOpts,
+        buildProps({ cfg: { baseUrl: "example.test" } }),
+      );
+      const props = getDivProps(result);
+      expect(props?.["data-theme-url"]).toBe("https://example.test/static/giscus");
+    });
+
+    it("falls back when cfg.baseUrl is missing", () => {
+      const result = renderComments(baseGiscusOpts, buildProps({ cfg: {} }));
+      const props = getDivProps(result);
+      expect(props?.["data-theme-url"]).toBe("https://example.com/static/giscus");
+    });
+
+    it("honours an explicit themeUrl override", () => {
+      const opts: CommentsOptions = {
+        provider: "giscus",
+        options: { ...baseGiscusOpts.options, themeUrl: "https://cdn.test/theme" },
+      };
+      const result = renderComments(opts, buildProps({ cfg: { baseUrl: "example.test" } }));
+      const props = getDivProps(result);
+      expect(props?.["data-theme-url"]).toBe("https://cdn.test/theme");
+    });
   });
 
-  it("applies default values when optional options are omitted", () => {
-    const result = renderComments(baseOpts, buildProps());
-    const props = getDivProps(result);
-    expect(props?.["data-mapping"]).toBe("url");
-    expect(props?.["data-strict"]).toBe("1");
-    expect(props?.["data-reactions-enabled"]).toBe("1");
-    expect(props?.["data-input-position"]).toBe("bottom");
-    expect(props?.["data-light-theme"]).toBe("light");
-    expect(props?.["data-dark-theme"]).toBe("dark");
-    expect(props?.["data-lang"]).toBe("en");
-  });
+  describe("BeBlob provider", () => {
+    it("propagates required beblob options", () => {
+      const result = renderComments(baseBeBlobOpts, buildProps());
+      const props = getDivProps(result);
+      expect(props).not.toBeNull();
+      expect(props?.["data-client-id"]).toBe("test-client-id");
+      expect(props?.["data-redirect-uri"]).toBe("https://example.com/");
+      expect(props?.["data-project-name"]).toBe("test/repo");
+      expect(props?.id).toBe("beblob_thread");
+      expect(props?.class).toContain("beblob");
+    });
 
-  it("respects user-provided optional values", () => {
-    const opts: CommentsOptions = {
-      provider: "giscus",
-      options: {
-        ...baseOpts.options,
-        mapping: "pathname",
-        strict: false,
-        reactionsEnabled: false,
-        inputPosition: "top",
-        lightTheme: "catppuccin_latte",
-        darkTheme: "catppuccin_mocha",
-        lang: "nl",
-      },
-    };
-    const result = renderComments(opts, buildProps());
-    const props = getDivProps(result);
-    expect(props?.["data-mapping"]).toBe("pathname");
-    expect(props?.["data-strict"]).toBe("0");
-    expect(props?.["data-reactions-enabled"]).toBe("0");
-    expect(props?.["data-input-position"]).toBe("top");
-    expect(props?.["data-light-theme"]).toBe("catppuccin_latte");
-    expect(props?.["data-dark-theme"]).toBe("catppuccin_mocha");
-    expect(props?.["data-lang"]).toBe("nl");
-  });
+    it("applies default values when optional options are omitted", () => {
+      const result = renderComments(baseBeBlobOpts, buildProps());
+      const props = getDivProps(result);
+      expect(props?.["data-issue-mapping-strategy"]).toBe("pageTitle");
+      expect(props?.["data-theme"]).toBe("light");
+      expect(props?.["data-lang"]).toBe("en");
+      expect(props?.["data-gitlab-url"]).toBe("https://gitlab.com");
+    });
 
-  it("uses cfg.baseUrl to build the default themeUrl", () => {
-    const result = renderComments(baseOpts, buildProps({ cfg: { baseUrl: "example.test" } }));
-    const props = getDivProps(result);
-    expect(props?.["data-theme-url"]).toBe("https://example.test/static/giscus");
-  });
+    it("respects user-provided optional values", () => {
+      const opts: CommentsOptions = {
+        provider: "beblob",
+        options: {
+          ...baseBeBlobOpts.options,
+          issueMappingStrategy: "url",
+          theme: "dark",
+          lang: "de",
+          gitlabUrl: "https://gitlab.example.com",
+        },
+      };
+      const result = renderComments(opts, buildProps());
+      const props = getDivProps(result);
+      expect(props?.["data-issue-mapping-strategy"]).toBe("url");
+      expect(props?.["data-theme"]).toBe("dark");
+      expect(props?.["data-lang"]).toBe("de");
+      expect(props?.["data-gitlab-url"]).toBe("https://gitlab.example.com");
+    });
 
-  it("falls back when cfg.baseUrl is missing", () => {
-    const result = renderComments(baseOpts, buildProps({ cfg: {} }));
-    const props = getDivProps(result);
-    expect(props?.["data-theme-url"]).toBe("https://example.com/static/giscus");
-  });
-
-  it("honours an explicit themeUrl override", () => {
-    const opts: CommentsOptions = {
-      provider: "giscus",
-      options: { ...baseOpts.options, themeUrl: "https://cdn.test/theme" },
-    };
-    const result = renderComments(opts, buildProps({ cfg: { baseUrl: "example.test" } }));
-    const props = getDivProps(result);
-    expect(props?.["data-theme-url"]).toBe("https://cdn.test/theme");
+    it("includes noscript fallback", () => {
+      const result = renderComments(baseBeBlobOpts, buildProps());
+      const v = result as { type?: string; props?: { children?: unknown } };
+      expect(v.type).toBe("div");
+      expect(v.props?.children).toBeDefined();
+    });
   });
 });

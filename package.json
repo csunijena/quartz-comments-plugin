@@ -97,7 +97,8 @@
       "provider": {
         "type": "enum",
         "values": [
-          "giscus"
+          "giscus",
+          "beblob"
         ]
       },
       "options": {
@@ -149,6 +150,38 @@
             "type": "string"
           },
           "lang": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "redirectUri": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "issueMappingStrategy": {
+            "type": "enum",
+            "values": [
+              "url",
+              "pageTitle",
+              "issueId"
+            ]
+          },
+          "issueId": {
+            "type": "string"
+          },
+          "theme": {
+            "type": "enum",
+            "values": [
+              "light",
+              "dark",
+              "white",
+              "classic"
+            ]
+          },
+          "gitlabUrl": {
             "type": "string"
           }
         }
