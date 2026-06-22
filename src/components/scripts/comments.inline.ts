@@ -127,24 +127,24 @@ if (typeof document !== "undefined") {
       document.addEventListener("themechange", themeChangeHandler);
       addCleanup(() => document.removeEventListener("themechange", themeChangeHandler));
     } else if (beblobContainer) {
-      const beblobScript = document.createElement("script");
-      beblobScript.id = "beblob-script";
-      beblobScript.src = "https://unpkg.com/beblob@2.1.0/dist/beblob.js";
-      beblobScript.async = true;
-      beblobScript.defer = true;
-      beblobScript.setAttribute("data-client-id", beblobContainer.dataset.clientId);
-      beblobScript.setAttribute("data-redirect-uri", beblobContainer.dataset.redirectUri);
-      beblobScript.setAttribute("data-project-name", beblobContainer.dataset.projectName);
-      beblobScript.setAttribute(
-        "data-issue-mapping-strategy",
-        beblobContainer.dataset.issueMappingStrategy,
-      );
-      beblobScript.setAttribute("data-theme", beblobContainer.dataset.theme);
-      beblobScript.setAttribute("data-lang", beblobContainer.dataset.lang);
-      beblobScript.setAttribute("data-gitlab-url", beblobContainer.dataset.gitlabUrl);
-      beblobScript.setAttribute("data-beblob-version", "2.1.0");
+      if (!document.getElementById("beblob-script")) {
+        const beblobScript = document.createElement("script");
+        beblobScript.id = "beblob-script";
+        beblobScript.src = "https://unpkg.com/beblob@2.1.0/dist/beblob.js";
+        beblobScript.setAttribute("data-client-id", beblobContainer.dataset.clientId);
+        beblobScript.setAttribute("data-redirect-uri", beblobContainer.dataset.redirectUri);
+        beblobScript.setAttribute("data-project-name", beblobContainer.dataset.projectName);
+        beblobScript.setAttribute(
+          "data-issue-mapping-strategy",
+          beblobContainer.dataset.issueMappingStrategy,
+        );
+        beblobScript.setAttribute("data-theme", beblobContainer.dataset.theme);
+        beblobScript.setAttribute("data-lang", beblobContainer.dataset.lang);
+        beblobScript.setAttribute("data-gitlab-url", beblobContainer.dataset.gitlabUrl);
+        beblobScript.setAttribute("data-beblob-version", "2.1.0");
 
-      beblobContainer.appendChild(beblobScript);
+        beblobContainer.appendChild(beblobScript);
+      }
 
       const themeChangeHandler = changeBeBlobTheme;
       document.addEventListener("themechange", themeChangeHandler);
