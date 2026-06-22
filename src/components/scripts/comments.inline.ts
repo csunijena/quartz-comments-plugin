@@ -142,6 +142,7 @@ if (typeof document !== "undefined") {
       beblobScript.setAttribute("data-theme", beblobContainer.dataset.theme);
       beblobScript.setAttribute("data-lang", beblobContainer.dataset.lang);
       beblobScript.setAttribute("data-gitlab-url", beblobContainer.dataset.gitlabUrl);
+      beblobScript.setAttribute("data-beblob-version", "2.1.0");
 
       beblobContainer.appendChild(beblobScript);
 
@@ -150,6 +151,12 @@ if (typeof document !== "undefined") {
       addCleanup(() => document.removeEventListener("themechange", themeChangeHandler));
     }
   };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupComments);
+  } else {
+    setupComments();
+  }
 
   document.addEventListener("nav", setupComments);
   document.addEventListener("render", setupComments);
