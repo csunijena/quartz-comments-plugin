@@ -4,7 +4,7 @@ function classNames(...classes) {
 }
 
 // src/components/scripts/comments.inline.ts
-var comments_inline_default = 'var g=e=>{let t=e.detail.theme,a=document.querySelector("iframe.giscus-frame");a&&a.contentWindow&&a.contentWindow.postMessage({giscus:{setConfig:{theme:m(u(t))}}},"https://giscus.app")},l=e=>{let t=e.detail.theme,a=document.querySelector(".beblob");if(!a)return;let s=t==="dark"?"dark":"light";a.setAttribute("data-theme",s);let n=document.getElementById("beblob-script");n&&n.setAttribute("data-theme",s)},u=e=>{if(e!=="dark"&&e!=="light")return e;let t=document.querySelector(".giscus");if(!t)return e;let a=t.dataset.darkTheme??"dark",s=t.dataset.lightTheme??"light";return e==="dark"?a:s},m=e=>{let t=document.querySelector(".giscus");return t?`${t.dataset.themeUrl??"https://giscus.app/themes"}/${e}.css`:`https://giscus.app/themes/${e}.css`},c=(e,t)=>{e.setAttribute("data-client-id",t.dataset.clientId),e.setAttribute("data-redirect-uri",t.dataset.redirectUri),e.setAttribute("data-project-name",t.dataset.projectName),e.setAttribute("data-issue-mapping-strategy",t.dataset.issueMappingStrategy),e.setAttribute("data-theme",t.dataset.theme),e.setAttribute("data-lang",t.dataset.lang),e.setAttribute("data-gitlab-url",t.dataset.gitlabUrl),e.setAttribute("data-beblob-version","2.1.0")},o=()=>{let e=document.querySelector(".beblob .gitlab-logo");if(!e)return;let t="https://unpkg.com/beblob@2.1.0/dist/images/gitlab-logo-500.svg";e.src!==t&&(e.src=t)},r=[],d=e=>{r.push(e)};if(typeof document<"u"){let e=()=>{r.forEach(s=>s()),r.length=0;let t=document.querySelector(".giscus"),a=document.querySelector(".beblob");if(t){let s=document.createElement("script");s.src="https://giscus.app/client.js",s.async=!0,s.crossOrigin="anonymous",s.setAttribute("data-loading","lazy"),s.setAttribute("data-emit-metadata","0"),s.setAttribute("data-repo",t.dataset.repo),s.setAttribute("data-repo-id",t.dataset.repoId),s.setAttribute("data-category",t.dataset.category),s.setAttribute("data-category-id",t.dataset.categoryId),s.setAttribute("data-mapping",t.dataset.mapping),s.setAttribute("data-strict",t.dataset.strict),s.setAttribute("data-reactions-enabled",t.dataset.reactionsEnabled),s.setAttribute("data-input-position",t.dataset.inputPosition),s.setAttribute("data-lang",t.dataset.lang);let n=document.documentElement.getAttribute("saved-theme");n&&s.setAttribute("data-theme",m(u(n))),t.appendChild(s);let i=g;document.addEventListener("themechange",i),d(()=>document.removeEventListener("themechange",i))}else if(a){let s=document.getElementById("beblob-script");if(s)c(s,a);else{let i=document.createElement("script");i.id="beblob-script",i.src="https://unpkg.com/beblob@2.1.0/dist/beblob.js",c(i,a),a.appendChild(i)}o(),setTimeout(o,0);let n=l;document.addEventListener("themechange",n),d(()=>document.removeEventListener("themechange",n))}};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",e):e(),document.addEventListener("nav",e),document.addEventListener("render",e)}\n';
+var comments_inline_default = 'var u=n=>{let e=n.detail.theme,s=document.querySelector("iframe.giscus-frame");s&&s.contentWindow&&s.contentWindow.postMessage({giscus:{setConfig:{theme:d(c(e))}}},"https://giscus.app")},m=n=>{let e=n.detail.theme,s=document.querySelector(".beblob");if(!s)return;let t=e==="dark"?"dark":"light";s.setAttribute("data-theme",t)},c=n=>{if(n!=="dark"&&n!=="light")return n;let e=document.querySelector(".giscus");if(!e)return n;let s=e.dataset.darkTheme??"dark",t=e.dataset.lightTheme??"light";return n==="dark"?s:t},d=n=>{let e=document.querySelector(".giscus");return e?`${e.dataset.themeUrl??"https://giscus.app/themes"}/${n}.css`:`https://giscus.app/themes/${n}.css`},a=[],o=n=>{a.push(n)};if(typeof document<"u"){let n=()=>{a.forEach(t=>t()),a.length=0;let e=document.querySelector(".giscus"),s=document.querySelector(".beblob");if(e){let t=document.createElement("script");t.src="https://giscus.app/client.js",t.async=!0,t.crossOrigin="anonymous",t.setAttribute("data-loading","lazy"),t.setAttribute("data-emit-metadata","0"),t.setAttribute("data-repo",e.dataset.repo),t.setAttribute("data-repo-id",e.dataset.repoId),t.setAttribute("data-category",e.dataset.category),t.setAttribute("data-category-id",e.dataset.categoryId),t.setAttribute("data-mapping",e.dataset.mapping),t.setAttribute("data-strict",e.dataset.strict),t.setAttribute("data-reactions-enabled",e.dataset.reactionsEnabled),t.setAttribute("data-input-position",e.dataset.inputPosition),t.setAttribute("data-lang",e.dataset.lang);let i=document.documentElement.getAttribute("saved-theme");i&&t.setAttribute("data-theme",d(c(i))),e.appendChild(t);let r=u;document.addEventListener("themechange",r),o(()=>document.removeEventListener("themechange",r))}else if(s){let t=m;document.addEventListener("themechange",t),o(()=>document.removeEventListener("themechange",t))}};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",n):n(),document.addEventListener("nav",n),document.addEventListener("render",n)}\n';
 var l;
 function S(n2) {
   return n2.children;
@@ -59,19 +59,50 @@ var Comments_default = ((opts) => {
         }
       );
     } else if (opts.provider === "beblob") {
+      const beblobVersion = "2.1.0";
+      const clientId = opts.options.clientId.trim();
+      const redirectUri = opts.options.redirectUri.trim();
+      const projectName = opts.options.projectName.trim();
+      const beblobProjectName = projectName.includes("/") ? projectName.split("/").filter(Boolean).pop() ?? projectName : projectName;
+      const issueMappingStrategy = opts.options.issueMappingStrategy ?? "pageTitle";
+      const issueId = opts.options.issueId?.trim();
+      const theme = opts.options.theme ?? "light";
+      const lang = opts.options.lang ?? "en";
+      const gitlabUrl = (opts.options.gitlabUrl ?? "https://gitlab.com").trim().replace(/\/+$/, "");
       return /* @__PURE__ */ u2(
         "div",
         {
           class: classNames(displayClass, "beblob"),
           id: "beblob_thread",
-          "data-client-id": opts.options.clientId,
-          "data-redirect-uri": opts.options.redirectUri,
-          "data-project-name": opts.options.projectName,
-          "data-issue-mapping-strategy": opts.options.issueMappingStrategy ?? "pageTitle",
-          "data-theme": opts.options.theme ?? "light",
-          "data-lang": opts.options.lang ?? "en",
-          "data-gitlab-url": opts.options.gitlabUrl ?? "https://gitlab.com",
-          children: /* @__PURE__ */ u2("noscript", { children: "Please enable JavaScript to view comments." })
+          "data-client-id": clientId,
+          "data-redirect-uri": redirectUri,
+          "data-project-name": projectName,
+          "data-issue-mapping-strategy": issueMappingStrategy,
+          "data-issue-id": issueId,
+          "data-theme": theme,
+          "data-lang": lang,
+          "data-gitlab-url": gitlabUrl,
+          children: [
+            /* @__PURE__ */ u2("noscript", { children: "Please enable JavaScript to view comments." }),
+            /* @__PURE__ */ u2(
+              "script",
+              {
+                id: "beblob-script",
+                src: `https://unpkg.com/beblob@${beblobVersion}/dist/beblob.js`,
+                "data-client-id": clientId,
+                "data-redirect-uri": redirectUri,
+                "data-project-name": beblobProjectName,
+                "data-issue-mapping-strategy": issueMappingStrategy,
+                "data-issue-id": issueId,
+                "data-dev-mode": "false",
+                "data-beblob-version": beblobVersion,
+                "data-theme": theme,
+                "data-lang": lang,
+                "data-gitlab-url": gitlabUrl,
+                defer: true
+              }
+            )
+          ]
         }
       );
     }
