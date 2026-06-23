@@ -74,33 +74,44 @@ export default ((opts: CommentsOptions) => {
       );
     } else if (opts.provider === "beblob") {
       const beblobVersion = "2.1.0";
+      const clientId = opts.options.clientId.trim();
+      const redirectUri = opts.options.redirectUri.trim();
+      const projectName = opts.options.projectName.trim();
+      const beblobProjectName = projectName.includes("/")
+        ? (projectName.split("/").filter(Boolean).pop() ?? projectName)
+        : projectName;
+      const issueMappingStrategy = opts.options.issueMappingStrategy ?? "pageTitle";
+      const issueId = opts.options.issueId?.trim();
+      const theme = opts.options.theme ?? "light";
+      const lang = opts.options.lang ?? "en";
+      const gitlabUrl = (opts.options.gitlabUrl ?? "https://gitlab.com").trim().replace(/\/+$/, "");
       return (
         <div
           class={classNames(displayClass, "beblob")}
           id="beblob_thread"
-          data-client-id={opts.options.clientId}
-          data-redirect-uri={opts.options.redirectUri}
-          data-project-name={opts.options.projectName}
-          data-issue-mapping-strategy={opts.options.issueMappingStrategy ?? "pageTitle"}
-          data-issue-id={opts.options.issueId}
-          data-theme={opts.options.theme ?? "light"}
-          data-lang={opts.options.lang ?? "en"}
-          data-gitlab-url={opts.options.gitlabUrl ?? "https://gitlab.com"}
+          data-client-id={clientId}
+          data-redirect-uri={redirectUri}
+          data-project-name={projectName}
+          data-issue-mapping-strategy={issueMappingStrategy}
+          data-issue-id={issueId}
+          data-theme={theme}
+          data-lang={lang}
+          data-gitlab-url={gitlabUrl}
         >
           <noscript>Please enable JavaScript to view comments.</noscript>
           <script
             id="beblob-script"
             src={`https://unpkg.com/beblob@${beblobVersion}/dist/beblob.js`}
-            data-client-id={opts.options.clientId}
-            data-redirect-uri={opts.options.redirectUri}
-            data-project-name={opts.options.projectName}
-            data-issue-mapping-strategy={opts.options.issueMappingStrategy ?? "pageTitle"}
-            data-issue-id={opts.options.issueId}
+            data-client-id={clientId}
+            data-redirect-uri={redirectUri}
+            data-project-name={beblobProjectName}
+            data-issue-mapping-strategy={issueMappingStrategy}
+            data-issue-id={issueId}
             data-dev-mode="false"
             data-beblob-version={beblobVersion}
-            data-theme={opts.options.theme ?? "light"}
-            data-lang={opts.options.lang ?? "en"}
-            data-gitlab-url={opts.options.gitlabUrl ?? "https://gitlab.com"}
+            data-theme={theme}
+            data-lang={lang}
+            data-gitlab-url={gitlabUrl}
             defer
           ></script>
         </div>

@@ -67,6 +67,22 @@ function getDivProps(vnode: unknown): Record<string, unknown> | null {
   return v.props ?? null;
 }
 
+function getBeBlobScriptProps(vnode: unknown): Record<string, unknown> | null {
+  if (typeof vnode !== "object" || vnode == null) return null;
+  const v = vnode as { props?: { children?: unknown } };
+  const children = v.props?.children;
+  const childrenArray = Array.isArray(children) ? children : [children];
+  for (const child of childrenArray) {
+    if (typeof child !== "object" || child == null) continue;
+    const childVNode = child as { type?: unknown; props?: Record<string, unknown> };
+    if (childVNode.type === "script") {
+      return childVNode.props ?? null;
+    }
+  }
+
+  return null;
+}
+
 describe("Comments Plugin", () => {
   it("should export Comments component", () => {
     expect(Comments).toBeDefined();
@@ -296,6 +312,35 @@ describe("Comments: data attribute wiring", () => {
       expect(props?.["data-theme"]).toBe("dark");
       expect(props?.["data-lang"]).toBe("de");
       expect(props?.["data-gitlab-url"]).toBe("https://gitlab.example.com");
+    });
+
+    it("renders canonical beblob script attributes", () => {
+      const result = renderComments(baseBeBlobOpts, buildProps());
+      const scriptProps = getBeBlobScriptProps(result);
+
+      expect(scriptProps).not.toBeNull();
+      expect(scriptProps?.id).toBe("beblob-script");
+      expect(scriptProps?.src).toBe("https://unpkg.com/beblob@2.1.0/dist/beblob.js");
+      expect(scriptProps?.["data-dev-mode"]).toBe("false");
+      expect(scriptProps?.["data-beblob-version"]).toBe("2.1.0");
+      expect(scriptProps?.["data-project-name"]).toBe("repo");
+    });
+
+    it("uses repo segment for script project name when namespace is provided", () => {
+      const opts: CommentsOptions = {
+        provider: "beblob",
+        options: {
+          ...baseBeBlobOpts.options,
+          projectName: "group/subgroup/my-project",
+        },
+      };
+
+      const result = renderComments(opts, buildProps());
+      const divProps = getDivProps(result);
+      const scriptProps = getBeBlobScriptProps(result);
+
+      expect(divProps?.["data-project-name"]).toBe("group/subgroup/my-project");
+      expect(scriptProps?.["data-project-name"]).toBe("my-project");
     });
 
     it("includes noscript fallback", () => {
