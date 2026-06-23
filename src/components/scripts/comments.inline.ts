@@ -30,10 +30,6 @@ const changeBeBlobTheme = (e: Event) => {
 
   const newTheme = theme === "dark" ? "dark" : "light";
   beblobContainer.setAttribute("data-theme", newTheme);
-  const beblobScript = document.getElementById("beblob-script") as HTMLScriptElement | null;
-  if (beblobScript) {
-    beblobScript.setAttribute("data-theme", newTheme);
-  }
 };
 
 const getThemeName = (theme: string) => {
@@ -55,32 +51,6 @@ const getThemeUrl = (theme: string) => {
     return `https://giscus.app/themes/${theme}.css`;
   }
   return `${giscusContainer.dataset.themeUrl ?? "https://giscus.app/themes"}/${theme}.css`;
-};
-
-const configureBeBlobScript = (beblobScript: HTMLScriptElement, beblobContainer: BeBlobElement) => {
-  beblobScript.setAttribute("data-client-id", beblobContainer.dataset.clientId);
-  beblobScript.setAttribute("data-redirect-uri", beblobContainer.dataset.redirectUri);
-  beblobScript.setAttribute("data-project-name", beblobContainer.dataset.projectName);
-  beblobScript.setAttribute(
-    "data-issue-mapping-strategy",
-    beblobContainer.dataset.issueMappingStrategy,
-  );
-  beblobScript.setAttribute("data-theme", beblobContainer.dataset.theme);
-  beblobScript.setAttribute("data-lang", beblobContainer.dataset.lang);
-  beblobScript.setAttribute("data-gitlab-url", beblobContainer.dataset.gitlabUrl);
-  beblobScript.setAttribute("data-beblob-version", "2.1.0");
-};
-
-const patchBeBlobLogo = () => {
-  const logo = document.querySelector(".beblob .gitlab-logo") as HTMLImageElement | null;
-  if (!logo) {
-    return;
-  }
-
-  const expectedLogoSrc = "https://unpkg.com/beblob@2.1.0/dist/images/gitlab-logo-500.svg";
-  if (logo.src !== expectedLogoSrc) {
-    logo.src = expectedLogoSrc;
-  }
 };
 
 type GiscusElement = Omit<HTMLElement, "dataset"> & {
@@ -106,6 +76,7 @@ type BeBlobElement = Omit<HTMLElement, "dataset"> & {
     redirectUri: string;
     projectName: string;
     issueMappingStrategy: string;
+    issueId?: string;
     theme: string;
     lang: string;
     gitlabUrl: string;
@@ -153,23 +124,6 @@ if (typeof document !== "undefined") {
       document.addEventListener("themechange", themeChangeHandler);
       addCleanup(() => document.removeEventListener("themechange", themeChangeHandler));
     } else if (beblobContainer) {
-      const existingBeBlobScript = document.getElementById("beblob-script") as
-        | HTMLScriptElement
-        | null;
-      if (existingBeBlobScript) {
-        configureBeBlobScript(existingBeBlobScript, beblobContainer);
-      } else {
-        const beblobScript = document.createElement("script");
-        beblobScript.id = "beblob-script";
-        beblobScript.src = "https://unpkg.com/beblob@2.1.0/dist/beblob.js";
-        configureBeBlobScript(beblobScript, beblobContainer);
-
-        beblobContainer.appendChild(beblobScript);
-      }
-
-      patchBeBlobLogo();
-      setTimeout(patchBeBlobLogo, 0);
-
       const themeChangeHandler = changeBeBlobTheme;
       document.addEventListener("themechange", themeChangeHandler);
       addCleanup(() => document.removeEventListener("themechange", themeChangeHandler));

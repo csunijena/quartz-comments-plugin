@@ -73,6 +73,7 @@ export default ((opts: CommentsOptions) => {
         ></div>
       );
     } else if (opts.provider === "beblob") {
+      const beblobVersion = "2.1.0";
       return (
         <div
           class={classNames(displayClass, "beblob")}
@@ -81,11 +82,27 @@ export default ((opts: CommentsOptions) => {
           data-redirect-uri={opts.options.redirectUri}
           data-project-name={opts.options.projectName}
           data-issue-mapping-strategy={opts.options.issueMappingStrategy ?? "pageTitle"}
+          data-issue-id={opts.options.issueId}
           data-theme={opts.options.theme ?? "light"}
           data-lang={opts.options.lang ?? "en"}
           data-gitlab-url={opts.options.gitlabUrl ?? "https://gitlab.com"}
         >
           <noscript>Please enable JavaScript to view comments.</noscript>
+          <script
+            id="beblob-script"
+            src={`https://unpkg.com/beblob@${beblobVersion}/dist/beblob.js`}
+            data-client-id={opts.options.clientId}
+            data-redirect-uri={opts.options.redirectUri}
+            data-project-name={opts.options.projectName}
+            data-issue-mapping-strategy={opts.options.issueMappingStrategy ?? "pageTitle"}
+            data-issue-id={opts.options.issueId}
+            data-dev-mode="false"
+            data-beblob-version={beblobVersion}
+            data-theme={opts.options.theme ?? "light"}
+            data-lang={opts.options.lang ?? "en"}
+            data-gitlab-url={opts.options.gitlabUrl ?? "https://gitlab.com"}
+            defer
+          ></script>
         </div>
       );
     }
