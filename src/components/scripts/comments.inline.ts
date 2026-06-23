@@ -141,7 +141,7 @@ if (typeof document !== "undefined") {
         beblobScript.setAttribute("data-theme", beblobContainer.dataset.theme);
         beblobScript.setAttribute("data-lang", beblobContainer.dataset.lang);
         beblobScript.setAttribute("data-gitlab-url", beblobContainer.dataset.gitlabUrl);
-        beblobScript.setAttribute("data-beblob-version", "2.1.0");
+        beblobScript.setAttribute("data-dev-mode", "true");
 
         beblobContainer.appendChild(beblobScript);
       }

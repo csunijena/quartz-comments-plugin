@@ -96,7 +96,7 @@ export default ((opts: CommentsOptions) => {
             data-theme={opts.options.theme ?? "light"}
             data-lang={opts.options.lang ?? "en"}
             data-gitlab-url={opts.options.gitlabUrl ?? "https://gitlab.com"}
-            data-beblob-version="2.1.0"
+            data-dev-mode="true"
             defer
           />
         </div>
