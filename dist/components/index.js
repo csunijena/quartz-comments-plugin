@@ -4,7 +4,7 @@ function classNames(...classes) {
 }
 
 // src/components/scripts/comments.inline.ts
-var comments_inline_default = 'var u=n=>{let e=n.detail.theme,s=document.querySelector("iframe.giscus-frame");s&&s.contentWindow&&s.contentWindow.postMessage({giscus:{setConfig:{theme:d(c(e))}}},"https://giscus.app")},m=n=>{let e=n.detail.theme,s=document.querySelector(".beblob");if(!s)return;let t=e==="dark"?"dark":"light";s.setAttribute("data-theme",t);let a=document.getElementById("beblob-script");a&&a.setAttribute("data-theme",t)},c=n=>{if(n!=="dark"&&n!=="light")return n;let e=document.querySelector(".giscus");if(!e)return n;let s=e.dataset.darkTheme??"dark",t=e.dataset.lightTheme??"light";return n==="dark"?s:t},d=n=>{let e=document.querySelector(".giscus");return e?`${e.dataset.themeUrl??"https://giscus.app/themes"}/${n}.css`:`https://giscus.app/themes/${n}.css`},i=[],o=n=>{i.push(n)};if(typeof document<"u"){let n=()=>{i.forEach(t=>t()),i.length=0;let e=document.querySelector(".giscus"),s=document.querySelector(".beblob");if(e){let t=document.createElement("script");t.src="https://giscus.app/client.js",t.async=!0,t.crossOrigin="anonymous",t.setAttribute("data-loading","lazy"),t.setAttribute("data-emit-metadata","0"),t.setAttribute("data-repo",e.dataset.repo),t.setAttribute("data-repo-id",e.dataset.repoId),t.setAttribute("data-category",e.dataset.category),t.setAttribute("data-category-id",e.dataset.categoryId),t.setAttribute("data-mapping",e.dataset.mapping),t.setAttribute("data-strict",e.dataset.strict),t.setAttribute("data-reactions-enabled",e.dataset.reactionsEnabled),t.setAttribute("data-input-position",e.dataset.inputPosition),t.setAttribute("data-lang",e.dataset.lang);let a=document.documentElement.getAttribute("saved-theme");a&&t.setAttribute("data-theme",d(c(a))),e.appendChild(t);let r=u;document.addEventListener("themechange",r),o(()=>document.removeEventListener("themechange",r))}else if(s){let t=m;document.addEventListener("themechange",t),o(()=>document.removeEventListener("themechange",t))}};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",n):n(),document.addEventListener("nav",n),document.addEventListener("render",n)}\n';
+var comments_inline_default = 'var u=s=>{let e=s.detail.theme,a=document.querySelector("iframe.giscus-frame");a&&a.contentWindow&&a.contentWindow.postMessage({giscus:{setConfig:{theme:c(o(e))}}},"https://giscus.app")},m=s=>{let e=s.detail.theme,a=document.querySelector(".beblob");if(!a)return;let t=e==="dark"?"dark":"light";a.setAttribute("data-theme",t);let n=document.getElementById("beblob-script");n&&n.setAttribute("data-theme",t)},o=s=>{if(s!=="dark"&&s!=="light")return s;let e=document.querySelector(".giscus");if(!e)return s;let a=e.dataset.darkTheme??"dark",t=e.dataset.lightTheme??"light";return s==="dark"?a:t},c=s=>{let e=document.querySelector(".giscus");return e?`${e.dataset.themeUrl??"https://giscus.app/themes"}/${s}.css`:`https://giscus.app/themes/${s}.css`},r=[],d=s=>{r.push(s)};if(typeof document<"u"){let s=()=>{r.forEach(t=>t()),r.length=0;let e=document.querySelector(".giscus"),a=document.querySelector(".beblob");if(e){let t=document.createElement("script");t.src="https://giscus.app/client.js",t.async=!0,t.crossOrigin="anonymous",t.setAttribute("data-loading","lazy"),t.setAttribute("data-emit-metadata","0"),t.setAttribute("data-repo",e.dataset.repo),t.setAttribute("data-repo-id",e.dataset.repoId),t.setAttribute("data-category",e.dataset.category),t.setAttribute("data-category-id",e.dataset.categoryId),t.setAttribute("data-mapping",e.dataset.mapping),t.setAttribute("data-strict",e.dataset.strict),t.setAttribute("data-reactions-enabled",e.dataset.reactionsEnabled),t.setAttribute("data-input-position",e.dataset.inputPosition),t.setAttribute("data-lang",e.dataset.lang);let n=document.documentElement.getAttribute("saved-theme");n&&t.setAttribute("data-theme",c(o(n))),e.appendChild(t);let i=u;document.addEventListener("themechange",i),d(()=>document.removeEventListener("themechange",i))}else if(a){let t=document.getElementById("beblob-script");t&&t.remove();let n=document.createElement("script");n.id="beblob-script",n.src="https://unpkg.com/beblob@2.1.0/dist/beblob.js",n.setAttribute("data-client-id",a.dataset.clientId),n.setAttribute("data-redirect-uri",a.dataset.redirectUri),n.setAttribute("data-project-name",a.dataset.projectName),n.setAttribute("data-issue-mapping-strategy",a.dataset.issueMappingStrategy),n.setAttribute("data-theme",a.dataset.theme),n.setAttribute("data-lang",a.dataset.lang),n.setAttribute("data-gitlab-url",a.dataset.gitlabUrl),n.dataset.beblobVersion="2.1.0",a.appendChild(n);let i=m;document.addEventListener("themechange",i),d(()=>document.removeEventListener("themechange",i))}};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",s):s(),document.addEventListener("nav",s),document.addEventListener("render",s)}\n';
 var l;
 function S(n2) {
   return n2.children;
@@ -71,25 +71,7 @@ var Comments_default = ((opts) => {
           "data-theme": opts.options.theme ?? "light",
           "data-lang": opts.options.lang ?? "en",
           "data-gitlab-url": opts.options.gitlabUrl ?? "https://gitlab.com",
-          children: [
-            /* @__PURE__ */ u2("noscript", { children: "Please enable JavaScript to view comments." }),
-            /* @__PURE__ */ u2(
-              "script",
-              {
-                id: "beblob-script",
-                src: "https://unpkg.com/beblob@2.1.0/dist/beblob.js",
-                "data-client-id": opts.options.clientId,
-                "data-redirect-uri": opts.options.redirectUri,
-                "data-project-name": opts.options.projectName,
-                "data-issue-mapping-strategy": opts.options.issueMappingStrategy ?? "pageTitle",
-                "data-theme": opts.options.theme ?? "light",
-                "data-lang": opts.options.lang ?? "en",
-                "data-gitlab-url": opts.options.gitlabUrl ?? "https://gitlab.com",
-                "data-dev-mode": "true",
-                defer: true
-              }
-            )
-          ]
+          children: /* @__PURE__ */ u2("noscript", { children: "Please enable JavaScript to view comments." })
         }
       );
     }

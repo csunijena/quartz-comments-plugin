@@ -86,19 +86,6 @@ export default ((opts: CommentsOptions) => {
           data-gitlab-url={opts.options.gitlabUrl ?? "https://gitlab.com"}
         >
           <noscript>Please enable JavaScript to view comments.</noscript>
-          <script
-            id="beblob-script"
-            src="https://unpkg.com/beblob@2.1.0/dist/beblob.js"
-            data-client-id={opts.options.clientId}
-            data-redirect-uri={opts.options.redirectUri}
-            data-project-name={opts.options.projectName}
-            data-issue-mapping-strategy={opts.options.issueMappingStrategy ?? "pageTitle"}
-            data-theme={opts.options.theme ?? "light"}
-            data-lang={opts.options.lang ?? "en"}
-            data-gitlab-url={opts.options.gitlabUrl ?? "https://gitlab.com"}
-            data-dev-mode="true"
-            defer
-          />
         </div>
       );
     }
