@@ -88,7 +88,6 @@ export default ((opts: CommentsOptions) => {
       return (
         <div
           class={classNames(displayClass, "beblob")}
-          id="beblob_thread"
           data-client-id={clientId}
           data-redirect-uri={redirectUri}
           data-project-name={projectName}
@@ -100,23 +99,25 @@ export default ((opts: CommentsOptions) => {
         >
           <h2 id="comments-heading">Comments</h2>
           <hr />
-          <noscript>Please enable JavaScript to view comments.</noscript>
-          <style>{"#beblob_thread .comment-textarea-container{border-top:none;}"}</style>
-          <script
-            id="beblob-script"
-            src={`https://unpkg.com/beblob@${beblobVersion}/dist/beblob.js`}
-            data-client-id={clientId}
-            data-redirect-uri={redirectUri}
-            data-project-name={beblobProjectName}
-            data-issue-mapping-strategy={issueMappingStrategy}
-            data-issue-id={issueId}
-            data-dev-mode="false"
-            data-beblob-version={beblobVersion}
-            data-theme={theme}
-            data-lang={lang}
-            data-gitlab-url={gitlabUrl}
-            defer
-          ></script>
+          <div id="beblob_thread">
+            <noscript>Please enable JavaScript to view comments.</noscript>
+            <style>{"#beblob_thread .comment-textarea-container{border-top:none;}"}</style>
+            <script
+              id="beblob-script"
+              src={`https://unpkg.com/beblob@${beblobVersion}/dist/beblob.js`}
+              data-client-id={clientId}
+              data-redirect-uri={redirectUri}
+              data-project-name={beblobProjectName}
+              data-issue-mapping-strategy={issueMappingStrategy}
+              data-issue-id={issueId}
+              data-dev-mode="false"
+              data-beblob-version={beblobVersion}
+              data-theme={theme}
+              data-lang={lang}
+              data-gitlab-url={gitlabUrl}
+              defer
+            ></script>
+          </div>
         </div>
       );
     }
