@@ -73,7 +73,6 @@ var Comments_default = ((opts) => {
         "div",
         {
           class: classNames(displayClass, "beblob"),
-          id: "beblob_thread",
           "data-client-id": clientId,
           "data-redirect-uri": redirectUri,
           "data-project-name": projectName,
@@ -85,26 +84,28 @@ var Comments_default = ((opts) => {
           children: [
             /* @__PURE__ */ u2("h2", { id: "comments-heading", children: "Comments" }),
             /* @__PURE__ */ u2("hr", {}),
-            /* @__PURE__ */ u2("noscript", { children: "Please enable JavaScript to view comments." }),
-            /* @__PURE__ */ u2("style", { children: "#beblob_thread .comment-textarea-container{border-top:none;}" }),
-            /* @__PURE__ */ u2(
-              "script",
-              {
-                id: "beblob-script",
-                src: `https://unpkg.com/beblob@${beblobVersion}/dist/beblob.js`,
-                "data-client-id": clientId,
-                "data-redirect-uri": redirectUri,
-                "data-project-name": beblobProjectName,
-                "data-issue-mapping-strategy": issueMappingStrategy,
-                "data-issue-id": issueId,
-                "data-dev-mode": "false",
-                "data-beblob-version": beblobVersion,
-                "data-theme": theme,
-                "data-lang": lang,
-                "data-gitlab-url": gitlabUrl,
-                defer: true
-              }
-            )
+            /* @__PURE__ */ u2("div", { id: "beblob_thread", children: [
+              /* @__PURE__ */ u2("noscript", { children: "Please enable JavaScript to view comments." }),
+              /* @__PURE__ */ u2("style", { children: "#beblob_thread .comment-textarea-container{border-top:none;}" }),
+              /* @__PURE__ */ u2(
+                "script",
+                {
+                  id: "beblob-script",
+                  src: `https://unpkg.com/beblob@${beblobVersion}/dist/beblob.js`,
+                  "data-client-id": clientId,
+                  "data-redirect-uri": redirectUri,
+                  "data-project-name": beblobProjectName,
+                  "data-issue-mapping-strategy": issueMappingStrategy,
+                  "data-issue-id": issueId,
+                  "data-dev-mode": "false",
+                  "data-beblob-version": beblobVersion,
+                  "data-theme": theme,
+                  "data-lang": lang,
+                  "data-gitlab-url": gitlabUrl,
+                  defer: true
+                }
+              )
+            ] })
           ]
         }
       );

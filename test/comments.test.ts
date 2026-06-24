@@ -67,20 +67,36 @@ function getDivProps(vnode: unknown): Record<string, unknown> | null {
   return v.props ?? null;
 }
 
-function getBeBlobScriptProps(vnode: unknown): Record<string, unknown> | null {
+function findVNode(
+  vnode: unknown,
+  predicate: (node: { type?: unknown; props?: Record<string, unknown> }) => boolean,
+): { type?: unknown; props?: Record<string, unknown> } | null {
   if (typeof vnode !== "object" || vnode == null) return null;
-  const v = vnode as { props?: { children?: unknown } };
+
+  const v = vnode as { type?: unknown; props?: Record<string, unknown> };
+  if (predicate(v)) {
+    return v;
+  }
+
   const children = v.props?.children;
   const childrenArray = Array.isArray(children) ? children : [children];
   for (const child of childrenArray) {
-    if (typeof child !== "object" || child == null) continue;
-    const childVNode = child as { type?: unknown; props?: Record<string, unknown> };
-    if (childVNode.type === "script") {
-      return childVNode.props ?? null;
+    const found = findVNode(child, predicate);
+    if (found) {
+      return found;
     }
   }
 
   return null;
+}
+
+function getNodePropsById(vnode: unknown, id: string): Record<string, unknown> | null {
+  const node = findVNode(vnode, (childVNode) => childVNode.props?.id === id);
+  return node?.props ?? null;
+}
+
+function getBeBlobScriptProps(vnode: unknown): Record<string, unknown> | null {
+  return getNodePropsById(vnode, "beblob-script");
 }
 
 describe("Comments Plugin", () => {
@@ -278,12 +294,13 @@ describe("Comments: data attribute wiring", () => {
     it("propagates required beblob options", () => {
       const result = renderComments(baseBeBlobOpts, buildProps());
       const props = getDivProps(result);
+      const threadProps = getNodePropsById(result, "beblob_thread");
       expect(props).not.toBeNull();
       expect(props?.["data-client-id"]).toBe("test-client-id");
       expect(props?.["data-redirect-uri"]).toBe("https://example.com/");
       expect(props?.["data-project-name"]).toBe("test/repo");
-      expect(props?.id).toBe("beblob_thread");
       expect(props?.class).toContain("beblob");
+      expect(threadProps?.id).toBe("beblob_thread");
     });
 
     it("applies default values when optional options are omitted", () => {
