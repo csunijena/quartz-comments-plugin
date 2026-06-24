@@ -98,6 +98,8 @@ export default ((opts: CommentsOptions) => {
           data-lang={lang}
           data-gitlab-url={gitlabUrl}
         >
+          <h2 id="comments-heading">Comments</h2>
+          <hr />
           <noscript>Please enable JavaScript to view comments.</noscript>
           <style>{"#beblob_thread .comment-textarea-container{border-top:none;}"}</style>
           <script
