@@ -84,9 +84,9 @@ var Comments_default = ((opts) => {
           children: [
             /* @__PURE__ */ u2("h2", { id: "comments-heading", children: "Comments" }),
             /* @__PURE__ */ u2("hr", {}),
+            /* @__PURE__ */ u2("style", { children: "#beblob_thread .comment-textarea-container{border-top:none;}" }),
             /* @__PURE__ */ u2("div", { id: "beblob_thread", children: [
               /* @__PURE__ */ u2("noscript", { children: "Please enable JavaScript to view comments." }),
-              /* @__PURE__ */ u2("style", { children: "#beblob_thread .comment-textarea-container{border-top:none;}" }),
               /* @__PURE__ */ u2(
                 "script",
                 {

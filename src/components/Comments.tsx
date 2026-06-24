@@ -99,9 +99,9 @@ export default ((opts: CommentsOptions) => {
         >
           <h2 id="comments-heading">Comments</h2>
           <hr />
+          <style>{"#beblob_thread .comment-textarea-container{border-top:none;}"}</style>
           <div id="beblob_thread">
             <noscript>Please enable JavaScript to view comments.</noscript>
-            <style>{"#beblob_thread .comment-textarea-container{border-top:none;}"}</style>
             <script
               id="beblob-script"
               src={`https://unpkg.com/beblob@${beblobVersion}/dist/beblob.js`}
@@ -115,8 +115,7 @@ export default ((opts: CommentsOptions) => {
               data-theme={theme}
               data-lang={lang}
               data-gitlab-url={gitlabUrl}
-              defer
-            ></script>
+              ></script>
           </div>
         </div>
       );
