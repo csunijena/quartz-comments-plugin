@@ -99,6 +99,7 @@ export default ((opts: CommentsOptions) => {
           data-gitlab-url={gitlabUrl}
         >
           <noscript>Please enable JavaScript to view comments.</noscript>
+          <style>{"#beblob_thread .comment-textarea-container{border-top:none;}"}</style>
           <script
             id="beblob-script"
             src={`https://unpkg.com/beblob@${beblobVersion}/dist/beblob.js`}
