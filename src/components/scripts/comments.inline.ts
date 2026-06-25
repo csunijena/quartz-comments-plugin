@@ -124,18 +124,14 @@ if (typeof document !== "undefined") {
       document.addEventListener("themechange", themeChangeHandler);
       addCleanup(() => document.removeEventListener("themechange", themeChangeHandler));
     } else if (beblobContainer) {
-      if (!(window as unknown as Record<string, unknown>)["beblob"]) {
-        const template = document.getElementById("beblob-script") as HTMLScriptElement | null;
-        if (template) {
-          const newScript = document.createElement("script");
-          newScript.src = template.src;
-          for (const attr of template.attributes) {
-            if (attr.name !== "id") {
-              newScript.setAttribute(attr.name, attr.value);
-            }
-          }
-          beblobContainer.querySelector("#beblob_thread")?.appendChild(newScript);
+      const existing = document.getElementById("beblob-script");
+      if (existing) {
+        existing.remove();
+        const newScript = document.createElement("script");
+        for (const attr of existing.attributes) {
+          newScript.setAttribute(attr.name, attr.value);
         }
+        beblobContainer.querySelector("#beblob_thread")?.appendChild(newScript);
       }
 
       const themeChangeHandler = changeBeBlobTheme;
